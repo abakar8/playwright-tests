@@ -1,0 +1,6 @@
+firstName;middleName;lastName;employeeId;dob;street;city;province;postal_code;mobile;email;anotheremail
+Jean;Paul;Martin;12345;1990-03-12;123 Rue Principale;Paris;IDF;75001;06 12 34 56 78;jean.martin@example.com;jean.martin1@example.com 
+Marie;Louise;Dubois;67890;1987-07-25;456 Avenue des Roses;Marseille;PAC;13001;07 89 12 34 56;marie.dubois@example.com;jean.martin2@example.com  
+Pierre;Jacques;Dupont;24680;1982-11-18;789 Rue de la Liberté;Lyon;ARA;69001;06 98 76 54 32;pierre.dupont@example.com;jean.martin3@example.com 
+Sophie;Marie;Lefebvre;13579;1989-05-03;1010 Boulevard Saint-Michel;Bordeaux;NAQ;33001;07 77 88 99 00;sophie.lefebvre@example.com;jean.martin4@example.com  
+François;Charles;Gagnon;97531;1995-12-09;222 Rue de la Paix;Toulouse;OCC;31001;06 66 55 44 33;francois.gagnon@example.com;jean.martin7@example.com 

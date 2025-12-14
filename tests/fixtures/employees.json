@@ -1,0 +1,37 @@
+[ 
+{ 
+ "firstName": "Jean", 
+ "middleName": "Paul", 
+"lastName": "Martin", 
+"employeeId": "12345",
+"nationality":"Belgian", 
+"matrialstaut":"Single",
+"sexe": "Masculin",
+"dob": "1990-03-12", 
+"street": "123 Rue Principale", 
+"city": "Paris", 
+ "province": "IDF", 
+"postal_code": "75001", 
+"mobile": "06 12 34 56 78", 
+ "email": "jean.martin@example.com",
+ "anotheremail":"jean1.martin@example.com"
+}, 
+{ 
+"firstName": "Marie", 
+"middleName": "Louise", 
+"lastName": "Dubois", 
+"employeeId": "67890", 
+"dob": "1987-07-25", 
+"nationality":"Belgian", 
+"matrialstaut":"Single",
+"sexe": "Masculin",
+"street": "456 Avenue des Roses", 
+"city": "Marseille", 
+"province": "PAC", 
+"postal_code": "13001", 
+"mobile": "07 89 12 34 56", 
+"email": "marie.dubois@example.com" ,
+"anotheremail":"marie1.dubois@example.com" 
+
+} 
+] 

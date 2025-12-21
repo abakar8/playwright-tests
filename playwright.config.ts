@@ -25,8 +25,10 @@ export default defineConfig({
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */ 
     use: { 
         /* Base URL to use in actions like `await page.goto('/')`. */ 
-        // baseURL:"http://localhost/orangehrm-5.7/web/index.php/auth/login", 
-        actionTimeout: 0, 
+         baseURL:"https://localhost/orangehrm-5.7", 
+        ignoreHTTPSErrors: true,
+        actionTimeout: 3000, 
+	ignoreHTTPSErrors: true,
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */ 
         trace: "on-first-retry", 
     }, 
@@ -36,19 +38,20 @@ export default defineConfig({
     // Folder for test artifacts such as screenshots, videos, traces, etc. 
     outputDir: "test-results", 
     // Each test is given 30 seconds. 
-    timeout: 30000, 
+    timeout: 120_000,
  
     /* Configure projects for major browsers */ 
     projects: [ 
         { 
-            name: "chromium", 
+           name: "chromium", 
             use: { ...devices["Desktop Chrome"] }, 
         }, 
  
-        // { 
-        //   name: 'firefox', 
-        //   use: { ...devices['Desktop Firefox'] }, 
-        // }, 
+         //{ 
+           //name: 'firefox', 
+           //use: { ...devices['Desktop Firefox'] 
+	   //browserName: 'firefox',}, 
+         //}, 
  
         // { 
         //   name: 'webkit', 

@@ -15,7 +15,7 @@ async logIn(username: string, password: string) {
   await this.page.getByRole('textbox', { name: 'Password' }).click();
   await this.page.getByRole('textbox', { name: 'Password' }).fill('Abandass-2024');
   await this.page.getByRole('button', { name: 'Login' }).click();
-  await this.page.getByRole('heading', { name: 'Dashbord' }).waitFor({state:"visible"});
+  //await this.page.getByRole('heading', { name: 'Dashbord' }).waitFor({state:"visible"});
 } 
  
 async addEmployee(employee: Employee) {

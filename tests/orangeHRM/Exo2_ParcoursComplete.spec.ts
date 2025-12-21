@@ -3,8 +3,8 @@ import type { Page } from "@playwright/test";
 
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost/orangehrm-5.7/web/index.php/auth/login');
-  //await expect(page.getByRole('heading', { name: 'Connexion' })).toBeVisible();
+  await page.goto('https://localhost/orangehrm-5.7/web/index.php/auth/login');
+  await expect(page.getByRole('heading', { name: 'Connexion' })).toBeVisible();
   await page.getByPlaceholder('Nom d\'utilisateur').click();
   await page.getByPlaceholder('Nom d\'utilisateur').fill('admin');
   await page.getByPlaceholder('Mot de passe').click();

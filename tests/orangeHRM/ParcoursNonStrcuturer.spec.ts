@@ -64,7 +64,7 @@ test('test', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Save' }).click({ timeout: 10_000 });
   await expect(page.getByText('Successfully Updated')).toBeVisible();
-  await page.waitForTimeout(10000);
+  //await page.waitForTimeout(10000);
   const successToast = page.locator('.oxd-toast'); // exemple OrangeHRM
   await expect(successToast).toBeVisible();
   await expect(successToast).toHaveText(/Successfully Updated/i);

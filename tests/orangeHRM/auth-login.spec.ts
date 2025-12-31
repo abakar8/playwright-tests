@@ -19,3 +19,21 @@ test("@smoke Login fails with invalid credentials", async ({ page }) => {
   ).toBeVisible();
   
 });
+test("@smoke Login fails with invalid Username", async ({ page }) => {
+  const orangeHRM = new OrangeHRM(page);
+  await orangeHRM.Home();
+  await orangeHRM.logIn("adm", "Abandass-2024");
+ await expect(
+    page.getByText("Invalid credentials")
+  ).toBeVisible();
+  
+});
+test("@smoke Login fails with invalid Password", async ({ page }) => {
+  const orangeHRM = new OrangeHRM(page);
+  await orangeHRM.Home();
+  await orangeHRM.logIn("admin", "Abandas");
+ await expect(
+    page.getByText("Invalid credentials")
+  ).toBeVisible();
+  
+});

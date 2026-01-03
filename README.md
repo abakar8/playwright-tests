@@ -1,20 +1,17 @@
-# 🧪 Playwright Automation – OrangeHRM
+# Playwright Automation – OrangeHRM
 
 Projet d’automatisation de tests end-to-end pour l’application **OrangeHRM**, basé sur **Playwright** et **TypeScript**.  
 Ce projet couvre les parcours fonctionnels critiques RH avec une architecture maintenable, une séparation **Smoke / Regression** et une intégration **CI via GitHub Actions**.
 
----
-
-## 🎯 Objectifs du projet
+## Objectifs du projet
 
 - Automatiser les fonctionnalités clés de OrangeHRM
 - Appliquer les bonnes pratiques de test automation
 - Mettre en place une suite stable, maintenable et CI-ready
 - Démontrer des compétences professionnelles en QA Automation
 
----
 
-## 🧰 Stack technique
+##  Stack technique
 
 - **Playwright**
 - **TypeScript**
@@ -25,7 +22,7 @@ Ce projet couvre les parcours fonctionnels critiques RH avec une architecture ma
 
 ---
 
-## 📁 Structure du projet
+##  Structure du projet
 ├── tests
 │ ├── auth-login.spec.ts
 │ ├── employee-create.data.spec.ts
@@ -44,31 +41,26 @@ Ce projet couvre les parcours fonctionnels critiques RH avec une architecture ma
 ├── README.md
 
 
----
+##  Scénarios couverts
 
-## 🧩 Scénarios couverts
-
-### 🔐 Authentification
+###  Authentification
 - Login avec succès
 - Login avec échec (credentials invalides)
 
-### 👤 Gestion des employés
+###  Gestion des employés
 - Création d’employés (data-driven)
 - Mise à jour des informations de contact
 - (Scénarios extensibles : recherche, suppression)
 
----
-
-## 🏷️ Tags de tests
+## Tags de tests
 
 | Tag | Description |
 |----|------------|
 | `@smoke` | Tests critiques (rapides) |
 | `@regression` | Suite complète |
 
----
 
-## ▶️ Exécution des tests
+##  Exécution des tests
 
 ### Lancer tous les tests
 npx playwright test --grep @smoke 

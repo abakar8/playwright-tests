@@ -21,7 +21,7 @@ var employee: Employee = {
      
     
  
-test("Full Journey Factorisation", async ({ page }) => { 
+test("Employee lifecycle end-to-end", async ({ page }) => { 
     //Instantiate the class 
     const orangeHRM = new OrangeHRM(page); 
     //Home 

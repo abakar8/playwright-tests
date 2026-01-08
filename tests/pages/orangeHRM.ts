@@ -116,6 +116,7 @@ async deleteEmployee(employee:Employee) {
  
 async logOut() { 
   await this.page.getByRole('listitem').filter({ hasText: 'ABAKAR GARGOUM' }).locator('i').click();
+  await this.page.getByRole('menuitem', { name: 'Logout' }).waitFor({state:'visible'});
   await this.page.getByRole('menuitem', { name: 'Logout' }).click();
   await this.page.getByRole('img', { name: 'company-branding' }).click();
 }

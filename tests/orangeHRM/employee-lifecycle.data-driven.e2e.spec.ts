@@ -6,21 +6,22 @@ var context: BrowserContext;
 let page: Page; 
 var employees: Employee[] | undefined; 
 test.beforeAll(async ({ browser }) => { 
-        console.log("Before tests"); 
-        employees = await loadJson("./tests/fixtures/employees.json"); 
-        context = await browser.newContext(); 
-        // Create a new page inside context. 
-        page = await context.newPage(); 
-        orangeHRM = new OrangeHRM(page); 
-        //home 
-        await orangeHRM.Home(); 
+        console.log("Before tests"); 
+        employees = await loadJson("./tests/fixtures/employees.json"); 
+        context = await browser.newContext(); 
+        // Create a new page inside context. 
+        page = await context.newPage(); 
+        orangeHRM = new OrangeHRM(page); 
+        //home 
+        await orangeHRM.Home(); 
     }); 
      
-    test.describe("Full Journey", () => { 
-        test("login", async () => { 
+    test.describe("Employee lifecycle end-to-end", () => { 
+        test("login", async () => { 
         await orangeHRM.logIn('admin','Abandass-2024');
-        }); 
-        test("add employee & ", async () => { 
+            }); 
+        test("add employee & ", async () => {
+        
             if (employees) 
                 for (const employee of employees) { 
                     await orangeHRM.addEmployee(employee); 

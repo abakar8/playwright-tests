@@ -14,12 +14,12 @@ async logIn(username: string, password: string) {
   await this.page.getByRole('textbox', { name: 'Password' }).click();
   await this.page.getByRole('textbox', { name: 'Password' }).fill(password);
   await this.page.getByRole('button', { name: 'Login' }).click();
-  await this.page.waitForTimeout(3000);
 } 
  
 async addEmployee(employee: Employee) {
+ // await this.page.getByRole('link', { name: 'Dashboard' }).waitFor({state:'visible'});
   await this.page.getByRole('link', { name: 'PIM' }).waitFor({state:'visible'});
-  await this.page.getByRole('link', { name: 'PIM' }).click();
+  await this.page.getByRole('link', { name: 'PIM' }).click({ timeout: 10_000 });
   await this.page.getByRole('button', { name: ' Add' }).waitFor({state:'visible'});
   await this.page.getByRole('button', { name: ' Add' }).click();
   await this.page.getByRole('textbox', { name: 'First Name' }).click();
@@ -29,7 +29,6 @@ async addEmployee(employee: Employee) {
   await this.page.getByRole('textbox').nth(4).click();
   await this.page.getByRole('textbox').nth(4).fill(employee.employeeId);
   await this.page.getByRole('button', { name: 'Save' }).click();
-  await this.page.waitForTimeout(3000)
 
 } 
 async modifyEmployeeContact(employee: Employee) {
@@ -42,7 +41,6 @@ async modifyEmployeeContact(employee: Employee) {
   await this.page.getByText(employee.sexe).click();
   await this.page.locator('.oxd-radio-input').first().click();
   await this.page.getByRole('button', { name: 'Save' }).click();
-  await this.page.waitForTimeout(3000);
 } 
 async searchEmployeeByName(employee: Employee) {
   await this.page.getByRole('link', { name: 'PIM' }).click();
@@ -50,7 +48,6 @@ async searchEmployeeByName(employee: Employee) {
   await this.page.getByRole('textbox', { name: 'Type for hints...' }).first().fill(employee.firstName);
   await this.page.getByRole('button', { name: 'Search' }).click();
   //await this.page.getByRole('button').filter({ hasText: /^$/ }).nth(3).click();
-  await this.page.waitForTimeout(3000); 
 
 } 
 async modifyEmployeeAddress() {
@@ -94,8 +91,7 @@ async searchEmployeeById(employee:Employee) {
   await this.page.locator('form').getByRole('textbox').nth(1).click();
   await this.page.locator('form').getByRole('textbox').nth(1).fill(employee.employeeId);
   await this.page.getByRole('button', { name: 'Rechercher' }).click();
-  await this.page.waitForTimeout(3000);  
-} 
+ } 
 async deleteEmployee(employee:Employee) {
   await this.page.getByRole('link', { name: 'PIM' }).click();
   await this.page.getByRole('link', { name: 'Employee List' }).click();
@@ -117,7 +113,8 @@ async deleteEmployee(employee:Employee) {
 async logOut() { 
   await this.page.getByRole('listitem').filter({ hasText: 'ABAKAR GARGOUM' }).locator('i').click();
   await this.page.getByRole('menuitem', { name: 'Logout' }).waitFor({state:'visible'});
-  await this.page.getByRole('menuitem', { name: 'Logout' }).click();
+  await this.page.getByRole('menuitem', { name: 'Logout' }).click({ timeout: 10_000 });
+  await this.page.getByRole('img', { name: 'company-branding' }).waitFor({state:'visible'});
   await this.page.getByRole('img', { name: 'company-branding' }).click();
 }
 } 

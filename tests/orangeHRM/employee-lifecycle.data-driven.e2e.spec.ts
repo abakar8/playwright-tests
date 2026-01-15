@@ -17,6 +17,7 @@ test.beforeAll(async ({ browser }) => {
     }); 
      
     test.describe("Employee lifecycle end-to-end", () => { 
+        //test.slow();
         test("login", async () => { 
         await orangeHRM.logIn('admin','Abandass-2024');
             }); 

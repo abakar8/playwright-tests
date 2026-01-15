@@ -12,6 +12,8 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({ 
     testDir: "./tests/orangeHRM", 
 	testMatch: "*spec.ts", 
+	//testMatch: "**/*.spec.ts",
+
     /* Run tests in files in parallel */ 
     // fullyParallel: true, 
     /* Fail the build on CI if you accidentally left test.only in the source code. */ 
@@ -21,24 +23,26 @@ export default defineConfig({
     /* Opt out of parallel tests on CI. */ 
     // workers: process.env.CI ? 1 : undefined, 
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */ 
-    reporter: "html", 
+    reporter: "html",
+   
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */ 
+    globalSetup: './global-setup.ts',
     use: { 
         /* Base URL to use in actions like `await page.goto('/')`. */ 
-         baseURL:"https://localhost/orangehrm-5.7", 
-        ignoreHTTPSErrors: true,
-        actionTimeout: 3000, 
-	ignoreHTTPSErrors: true,
+       storageState: 'tests/fixtures/auth.json',
+       ignoreHTTPSErrors: true, 
+       baseURL:"https://localhost/orangehrm-5.7", 
+       actionTimeout: 10_000, 
+        	
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */ 
         trace: "on-first-retry", 
     }, 
-    expect: { 
-        timeout: 5000, 
-    }, 
+    expect: { timeout: 5_000, }, 
     // Folder for test artifacts such as screenshots, videos, traces, etc. 
     outputDir: "test-results", 
     // Each test is given 30 seconds. 
     timeout: 120_000,
+    fullyParallel: false, 
  
     /* Configure projects for major browsers */ 
     projects: [ 

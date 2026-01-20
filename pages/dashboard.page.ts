@@ -3,22 +3,26 @@ import { BasePage } from './base.page';
 
 export class DashboardPage extends BasePage {
   readonly pimMenu: Locator;
+  readonly dashboardLink: Locator;
   readonly userDropdown: Locator;
   readonly logoutButton: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.pimMenu = page.locator('a[href*="/pim"]').first();
-    this.userDropdown = page.locator('.oxd-userdropdown');
-    this.logoutButton = page.locator('a[href*="/logout"]');
+    this.pimMenu = page.getByRole('link', { name: 'PIM' });
+    this.dashboardLink = page.getByRole('link', { name: 'Dashboard' });
+    this.userDropdown = page.getByRole('listitem').filter({ hasText: 'ABAKAR GARGOUM' }).locator('i');
+    this.logoutButton = page.getByRole('menuitem', { name: 'Logout' });
   }
 
   async navigateToPIM() {
-    await this.clickElement(this.pimMenu);
+    await this.pimMenu.waitFor({ state: 'visible' });
+    await this.pimMenu.click({ timeout: 10000 });
   }
 
   async logout() {
-    await this.clickElement(this.userDropdown);
-    await this.clickElement(this.logoutButton);
+    await this.userDropdown.click();
+    await this.logoutButton.waitFor({ state: 'visible' });
+    await this.logoutButton.click({ timeout: 10000 });
   }
 }

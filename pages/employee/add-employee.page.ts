@@ -1,52 +1,73 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../base.page';
 
+export interface Employee {
+  firstName: string;
+  lastName: string;
+  employeeId: string;
+  nationality?: string;
+  matrialstaut?: string;
+  sexe?: string;
+  username?: string;
+  password?: string;
+}
+
 export class AddEmployeePage extends BasePage {
   readonly addButton: Locator;
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
   readonly employeeIdInput: Locator;
-  readonly createLoginCheckbox: Locator;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly confirmPasswordInput: Locator;
   readonly saveButton: Locator;
   readonly successMessage: Locator;
+  readonly successToast: Locator;
+  readonly nationalityMenu: Locator;
+  readonly nationalityInput: Locator;
+  readonly maritalStatusMenu: Locator;
+  readonly maritalStatusInput: Locator;
+  readonly genderMale: Locator
 
   constructor(page: Page) {
     super(page);
-    this.addButton = page.locator('button:has-text("Add")');
-    this.firstNameInput = page.locator('input[name="firstName"]');
-    this.lastNameInput = page.locator('input[name="lastName"]');
-    this.employeeIdInput = page.locator('input.oxd-input').nth(4);
-    this.createLoginCheckbox = page.locator('input[type="checkbox"]');
-    this.usernameInput = page.locator('input[autocomplete="off"]').nth(0);
-    this.passwordInput = page.locator('input[type="password"]').nth(0);
-    this.confirmPasswordInput = page.locator('input[type="password"]').nth(1);
-    this.saveButton = page.locator('button[type="submit"]');
-    this.successMessage = page.locator('.oxd-toast-content');
+    this.addButton = page.getByRole('button', { name: ' Add' });
+    this.firstNameInput = page.getByRole('textbox', { name: 'First Name' });
+    this.lastNameInput = page.getByRole('textbox', { name: 'Last Name' });
+    this.employeeIdInput = page.getByRole('textbox').nth(4);
+    this.saveButton = page.getByRole('button', { name: 'Save' });
+    this.successMessage = page.getByText('Successfully Updated');
+    this.successToast = page.locator('.oxd-toast');
+    this.nationalityMenu = page.locator('.oxd-icon.bi-caret-down-fill.oxd-select-text--arrow').first(); 
+    this.nationalityInput = page.getByRole('option', { name:'' }); 
+    this.maritalStatusMenu = page.locator('div:nth-child(2) > .oxd-input-group > div:nth-child(2) > .oxd-select-wrapper > .oxd-select-text > .oxd-select-text--after > .oxd-icon'); 
+    this.maritalStatusInput = page.locator(''); 
+    this.genderMale = page.locator(''); 
   }
 
-  async clickAddEmployee() {
-    await this.clickElement(this.addButton);
+  async clickAddEmployee(employee: Employee) {
+    await this.addButton.waitFor({ state: 'visible' });
+    await this.addButton.click();
+    await this.firstNameInput.click();
+    await this.firstNameInput.fill(employee.firstName);
+    await this.lastNameInput.click();
+    await this.lastNameInput.fill(employee.lastName);
+    await this.employeeIdInput.click();
+    await this.employeeIdInput.fill(employee.employeeId);
   }
 
-  async fillEmployeeDetails(firstName: string, lastName: string, employeeId: string) {
-    await this.fillInput(this.firstNameInput, firstName);
-    await this.fillInput(this.lastNameInput, lastName);
-    await this.employeeIdInput.clear();
-    await this.fillInput(this.employeeIdInput, employeeId);
-  }
-
-  async createLoginCredentials(username: string, password: string) {
-    await this.clickElement(this.createLoginCheckbox);
-    await this.fillInput(this.usernameInput, username);
-    await this.fillInput(this.passwordInput, password);
-    await this.fillInput(this.confirmPasswordInput, password);
+  async fillEmployeeDetails(employee: Employee) {
+    await this.nationalityMenu.waitFor({ state: 'visible' });
+    await this.nationalityMenu.click();
+    await this.page.getByRole('option', { name: employee.nationality! }).click();
+    await this.maritalStatusMenu.click();
+    await this.page.getByText(employee.matrialstaut!).click();
+    await this.firstNameInput.click();
+    await this.firstNameInput.fill(employee.firstName);
+    await this.lastNameInput.click();
+    await this.lastNameInput.fill(employee.lastName);
+    await this.employeeIdInput.click();
+    await this.employeeIdInput.fill(employee.employeeId);
   }
 
   async saveEmployee() {
-    await this.clickElement(this.saveButton);
-    await this.page.waitForLoadState('networkidle');
+    await this.saveButton.click();
   }
 }

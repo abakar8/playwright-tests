@@ -9,7 +9,19 @@ export interface Employee {
   matrialstaut?: string;
   sexe?: string;
   username?: string;
+  dateOfBirth?: string;
   password?: string;
+  street?: string ;
+  city?: string;
+  state?: string ;
+  zipCode?: string ;
+  postalCode?: string ;
+  country?: string ;
+  homePhone?: string ;
+  mobile?: string ;
+  workPhone?: string ;
+  workEmail?: string ;
+  otherEmail?: string ;
 }
 
 export class AddEmployeePage extends BasePage {
@@ -24,7 +36,10 @@ export class AddEmployeePage extends BasePage {
   readonly nationalityInput: Locator;
   readonly maritalStatusMenu: Locator;
   readonly maritalStatusInput: Locator;
-  readonly genderMale: Locator
+  readonly genderMale: Locator;
+  readonly dateOfBirthMenu: Locator;
+  readonly dateOfBirthInput: Locator;
+
 
   constructor(page: Page) {
     super(page);
@@ -39,7 +54,10 @@ export class AddEmployeePage extends BasePage {
     this.nationalityInput = page.getByRole('option', { name:'' }); 
     this.maritalStatusMenu = page.locator('div:nth-child(2) > .oxd-input-group > div:nth-child(2) > .oxd-select-wrapper > .oxd-select-text > .oxd-select-text--after > .oxd-icon'); 
     this.maritalStatusInput = page.locator(''); 
+    this.dateOfBirthMenu = page.locator('div:nth-child(5) > div:nth-child(2) > div > .oxd-input-group > div:nth-child(2) > .oxd-date-wrapper > .oxd-date-input > .oxd-icon');
+    this.dateOfBirthInput = page.locator('option[value=""]');
     this.genderMale = page.locator(''); 
+
   }
 
   async clickAddEmployee(employee: Employee) {
@@ -59,12 +77,15 @@ export class AddEmployeePage extends BasePage {
     await this.page.getByRole('option', { name: employee.nationality! }).click();
     await this.maritalStatusMenu.click();
     await this.page.getByText(employee.matrialstaut!).click();
-    await this.firstNameInput.click();
-    await this.firstNameInput.fill(employee.firstName);
-    await this.lastNameInput.click();
-    await this.lastNameInput.fill(employee.lastName);
-    await this.employeeIdInput.click();
-    await this.employeeIdInput.fill(employee.employeeId);
+    //await this.dateOfBirthMenu.click();
+    //await this.page.getByRole('option', { name: employee.dateOfBirth! }).click();
+    //await this.page.getByText(employee.sexe!).click();
+    if (employee.sexe === 'Male') {
+      await this.page.locator('.oxd-radio-input').first().click();
+    } else if (employee.sexe === 'Female') {
+      await this.page.locator('.oxd-radio-input').nth(1).click();
+    }
+  
   }
 
   async saveEmployee() {

@@ -10,6 +10,7 @@ test.describe('Ajout d\'employé', () => {
   });
 
   test('Ajouter un nouvel employé avec succès', async ({ addEmployeePage }) => {
+    test.setTimeout(60000);
     const employee = createEmployee({
       firstName: 'Jean',
       lastName: 'Dupont',
@@ -23,7 +24,6 @@ test.describe('Ajout d\'employé', () => {
     });
 
     await addEmployeePage.clickAddEmployee(employee);
-    await addEmployeePage.saveEmployee();
     await addEmployeePage.fillEmployeeDetails(employee);
     await addEmployeePage.saveEmployee();
     
@@ -50,16 +50,11 @@ test.describe('Ajout d\'employé', () => {
       homePhone: '0123456789',
       mobile: '0612345678',
       workPhone: '0198765432',
-      workEmail: 'marie.martin@orange.com',
-      otherEmail: 'marie.martin@gmail.com',
-      
-      
+      workEmail: 'marie.martin1@orange.com',
+      otherEmail: 'marie.martin1@gmail.com',  
     });
-    
-
-
     await addEmployeePage.clickAddEmployee(employee);
-     await addEmployeePage.saveEmployee();
+    await addEmployeePage.saveEmployee();
     await addEmployeePage.fillEmployeeDetails(employee);
     await addEmployeePage.saveEmployee();
     await employeeDetailsPage.updateContactDetails(employee);

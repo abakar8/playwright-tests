@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
 //dotenv.config();
 
 export default defineConfig({
-  testDir: './tests/employee',
+  testDir: './tests',
   testMatch: "*spec.ts", 
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

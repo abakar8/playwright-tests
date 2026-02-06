@@ -50,8 +50,8 @@ test.describe('Ajout d\'employé', () => {
       homePhone: '0123456789',
       mobile: '0612345678',
       workPhone: '0198765432',
-      workEmail: 'marie.martin1@orange.com',
-      otherEmail: 'marie.martin1@gmail.com',  
+      workEmail: 'marie.martin2@orange.com',
+      otherEmail: 'marie.martin2@gmail.com',  
     });
     await addEmployeePage.clickAddEmployee(employee);
     await addEmployeePage.saveEmployee();

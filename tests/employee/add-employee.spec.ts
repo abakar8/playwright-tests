@@ -24,6 +24,7 @@ test.describe('Ajout d\'employé', () => {
     });
 
     await addEmployeePage.clickAddEmployee(employee);
+    await addEmployeePage.saveEmployee();
     await addEmployeePage.fillEmployeeDetails(employee);
     await addEmployeePage.saveEmployee();
     

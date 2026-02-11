@@ -25,7 +25,11 @@ test.describe('Ajout d\'employé', () => {
 
     await addEmployeePage.clickAddEmployee(employee);
     // Employee Id already exists, so we expect an error message to be displayed
-    await addEmployeePage.saveEmployee();
+     // Employee Id already exists, so we expect an error message to be displayed
+    await expect(addEmployeePage.employeeIdErrorMessage).toBeVisible();
+    const errorText = await addEmployeePage.getErrorMessage();
+    expect(errorText.toLowerCase()).toContain('already exists')
+    //await addEmployeePage.saveEmployee();
     //await addEmployeePage.fillEmployeeDetails(employee);
     //await addEmployeePage.saveEmployee();
      

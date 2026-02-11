@@ -28,7 +28,7 @@ export class LoginPage extends BasePage {
     await this.passwordInput.fill(password);
     await this.loginButton.click();
   }
-/*
+
   async isErrorDisplayed(): Promise {
     return await this.errorMessage.isVisible();
   }
@@ -37,5 +37,5 @@ export class LoginPage extends BasePage {
     await this.companyLogo.waitFor({ state: 'visible' });
     return await this.companyLogo.isVisible();
   }
-    */
+    
 }

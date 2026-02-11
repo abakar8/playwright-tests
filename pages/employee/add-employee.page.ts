@@ -39,6 +39,9 @@ export class AddEmployeePage extends BasePage {
   readonly genderMale: Locator;
   readonly dateOfBirthMenu: Locator;
   readonly dateOfBirthInput: Locator;
+  readonly errorMessage: Locator;
+  readonly employeeIdErrorMessage: Locator;
+  readonly requiredFieldError: Locator;
 
 
   constructor(page: Page) {
@@ -57,6 +60,10 @@ export class AddEmployeePage extends BasePage {
     this.dateOfBirthMenu = page.locator('div:nth-child(5) > div:nth-child(2) > div > .oxd-input-group > div:nth-child(2) > .oxd-date-wrapper > .oxd-date-input > .oxd-icon');
     this.dateOfBirthInput = page.locator('option[value=""]');
     this.genderMale = page.locator(''); 
+    this.errorMessage = page.locator('.oxd-input-field-error-message');
+    this.employeeIdErrorMessage = page.locator('.oxd-input-field-error-message').filter({ hasText: /Employee Id|already exists/i });
+    this.requiredFieldError = page.locator('.oxd-input-field-error-message').filter({ hasText: /Required/i });
+  
 
   }
 
@@ -90,5 +97,17 @@ export class AddEmployeePage extends BasePage {
 
   async saveEmployee() {
     await this.saveButton.click();
+  }
+  async isEmployeeIdErrorDisplayed(): Promise {
+    return await this.employeeIdErrorMessage.isVisible();
+  }
+
+  async isRequiredFieldErrorDisplayed(): Promise {
+    return await this.requiredFieldError.isVisible();
+  }
+
+  async getErrorMessage(): Promise {
+    await this.errorMessage.first().waitFor({ state: 'visible', timeout: 5000 });
+    return await this.errorMessage.first().textContent() || '';
   }
 }

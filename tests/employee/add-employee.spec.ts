@@ -9,7 +9,7 @@ test.describe('Ajout d\'employé', () => {
     await dashboardPage.navigateToPIM();
   });
 
-  test('Ajouter un nouvel employé avec succès', async ({ addEmployeePage }) => {
+  test('OR-30_US-2: Ajouter un nouvel employé avec succès', async ({ addEmployeePage }) => {
     test.setTimeout(60000);
     const employee = createEmployee({
       firstName: 'Jean',

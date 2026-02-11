@@ -9,12 +9,13 @@ test.describe('Ajout d\'employé', () => {
     await dashboardPage.navigateToPIM();
   });
 
-  test('OR-30_US-2: Ajouter un nouvel employé avec succès', async ({ addEmployeePage }) => {
+  test('OR-29 - Création d’un employé avec données valides', async ({ addEmployeePage }) => {
     test.setTimeout(60000);
+    test.info().annotations.push({ type: 'Jira', description: 'OR-29' });
     const employee = createEmployee({
       firstName: 'Jean',
       lastName: 'Dupont',
-      employeeId: '123425',
+      employeeId: '128425',
       nationality: 'Albanian',
       matrialstaut: 'Single',
       //dateOfBirth: '1990-01-01',

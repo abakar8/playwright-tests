@@ -10,6 +10,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    env:
+      ORANGEHRM_BASE_URL: http://your-server-url/orangehrm-5.7/web/index.php
 
     steps:
     - name: Checkout repository

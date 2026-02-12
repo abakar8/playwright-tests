@@ -31,7 +31,7 @@ jobs:
     # ✅ Démarrage du serveur OrangeHRM
     - name: Start OrangeHRM server
       run: |
-        php -S localhost:8080 -t orangehrm-5.7/web > server.log 2>&1 &
+        php -S localhost:8181 -t orangehrm-5.7/web > server.log 2>&1 &
         sleep 10  # Attend que le serveur démarre
         cat server.log
 
@@ -41,7 +41,7 @@ jobs:
     # ✅ Lancement des tests avec la bonne BASE_URL
     - name: Run Playwright tests
       env:
-        BASE_URL: http://localhost:8080
+        BASE_URL: http://localhost:8181
       run: npx playwright test --reporter=line,junit,html
 
     # ✅ Upload des rapports HTML et JUnit

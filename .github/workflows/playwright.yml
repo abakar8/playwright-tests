@@ -24,11 +24,18 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+
     - name: Start OrangeHRM server
       run: |
-        # Adjust command for your app/server
-          nohup php -S localhost:8080 -t orangehrm-5.7/web > server.log 2>&1 &
-    # Use 8080 for local tests unless SSL is configured
+        php -S localhost:8080 -t orangehrm-5.7/web > server.log 2>&1 &
+        sleep 3
+
+    - name: Wait for server
+      run: npx wait-on http://localhost:8080 --timeout 60000
 
     - name: Wait for server
       run: npx wait-on http://localhost:8080 --timeout 60000
@@ -37,11 +44,11 @@ jobs:
       run: npx playwright install --with-deps
 
     - name: Run Playwright tests (JUnit + HTML)
-      run: |
-        npx playwright test \
-        --reporter=line,junit,html
-        env:
+      env:
           BASE_URL: http://localhost:8080
+      run: |
+        npx playwright test --reporter=line,junit,html
+        
 
     # Upload HTML Report
     - name: Upload Playwright HTML Report
@@ -60,3 +67,7 @@ jobs:
         name: junit-report
         path: test-results/junit.xml
         retention-days: 30
+    - name: Check PHP version
+      run: php -v
+    - name: Check running process
+      run: ps aux | grep php

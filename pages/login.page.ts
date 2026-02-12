@@ -18,7 +18,7 @@ export class LoginPage extends BasePage {
   }
 
   async navigate() {
-    await this.page.goto('https://localhost/orangehrm-5.7/web/index.php/auth/login');
+     await this.page.goto('/orangehrm-5.7/web/index.php/auth/login');
   }
 
   async login(username: string, password: string) {

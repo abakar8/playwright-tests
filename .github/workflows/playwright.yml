@@ -10,8 +10,6 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    env:
-      ORANGEHRM_BASE_URL: http://your-server-url/orangehrm-5.7/web/index.php
 
     steps:
     - name: Checkout repository
@@ -24,6 +22,7 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -32,24 +31,20 @@ jobs:
     - name: Start OrangeHRM server
       run: |
         php -S localhost:8080 -t orangehrm-5.7/web > server.log 2>&1 &
-        sleep 3
+        sleep 5
+        cat server.log
 
-    - name: Wait for server
-      run: npx wait-on http://localhost:8080 --timeout 60000
-
-   
+    - name: Test server manually
+      run: curl -I http://localhost:8080
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    - name: Run Playwright tests (JUnit + HTML)
+    - name: Run Playwright tests
       env:
-          BASE_URL: http://localhost:8080
-      run: |
-        npx playwright test --reporter=line,junit,html
-        
+        BASE_URL: http://localhost:8080
+      run: npx playwright test --reporter=line,junit,html
 
-    # Upload HTML Report
     - name: Upload Playwright HTML Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -58,7 +53,6 @@ jobs:
         path: playwright-report/
         retention-days: 30
 
-    # Upload JUnit file (for Xray)
     - name: Upload JUnit Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -66,7 +60,3 @@ jobs:
         name: junit-report
         path: test-results/junit.xml
         retention-days: 30
-    - name: Check PHP version
-      run: php -v
-    - name: Check running process
-      run: ps aux | grep php

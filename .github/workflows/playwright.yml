@@ -8,8 +8,10 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    # 🔹 Service MySQL
     services:
       mysql:
         image: mysql:5.7
@@ -25,39 +27,70 @@ jobs:
           --health-retries=3
 
     steps:
+    # 🔹 Checkout code
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # 🔹 Setup Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: lts/*
 
+    # 🔹 Install dependencies
     - name: Install dependencies
       run: npm ci
 
+    # 🔹 Setup PHP
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
 
-    # ✅ Démarrage du serveur OrangeHRM
+    # 🔹 Setup OrangeHRM (si pas commité dans le repo)
+    - name: Setup OrangeHRM
+      run: |
+        mkdir -p orangehrm-5.7
+        if [ ! -f "orangehrm-5.7/web/index.php" ]; then
+          curl -L -o orangehrm.zip https://github.com/orangehrm/orangehrm/releases/download/5.7.0/orangehrm-5.7.zip
+          unzip orangehrm.zip -d orangehrm-5.7
+        fi
+
+    # 🔹 Wait for MySQL to be ready
+    - name: Wait for MySQL
+      run: |
+        for i in {1..20}; do
+          if mysqladmin ping -h "mysql" --silent; then
+            echo "MySQL is up!"
+            break
+          fi
+          echo "Waiting for MySQL..."
+          sleep 3
+        done
+
+    # 🔹 Start OrangeHRM server
     - name: Start OrangeHRM server
       run: |
         php -S localhost:8181 -t orangehrm-5.7/web > server.log 2>&1 &
-        sleep 10  # Attend que le serveur démarre
+        sleep 10
         cat server.log
 
+    # 🔹 Install Playwright browsers
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
 
-    # ✅ Lancement des tests avec la bonne BASE_URL
+    # 🔹 Run Playwright tests
     - name: Run Playwright tests
       env:
         BASE_URL: http://localhost:8181
+        DB_HOST: mysql
+        DB_PORT: 3306
+        DB_USER: root
+        DB_PASSWORD: root
+        DB_NAME: orangehrm
       run: npx playwright test --reporter=line,junit,html
 
-    # ✅ Upload des rapports HTML et JUnit
+    # 🔹 Upload Playwright HTML Report
     - name: Upload Playwright HTML Report
       if: always()
       uses: actions/upload-artifact@v4
@@ -66,6 +99,7 @@ jobs:
         path: playwright-report/
         retention-days: 30
 
+    # 🔹 Upload JUnit Report (pour Xray)
     - name: Upload JUnit Report
       if: always()
       uses: actions/upload-artifact@v4

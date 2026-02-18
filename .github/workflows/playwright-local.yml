@@ -44,12 +44,12 @@ jobs:
         shell: powershell
         run: |
           try {
-            $response = Invoke-WebRequest -Uri "http://localhost/orangehrm-5.7/" -TimeoutSec 10
+            $response = Invoke-WebRequest -Uri "https://localhost/orangehrm-5.7/web/index.php/auth/login" -TimeoutSec 10
             if ($response.StatusCode -eq 200) {
               Write-Host "✅ OrangeHRM is accessible"
             }
           } catch {
-            Write-Error "❌ Cannot access OrangeHRM at http://localhost/orangehrm-5.7/"
+            Write-Error "❌ Cannot access OrangeHRM at https://localhost/orangehrm-5.7/web/index.php/auth/login"
             exit 1
           }
 

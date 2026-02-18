@@ -11,6 +11,7 @@ export const environments = {
   }
 };
 
+
 export const getEnvironment = () => {
   const env = process.env.ENV || 'demo';
   return environments[env as keyof typeof environments];

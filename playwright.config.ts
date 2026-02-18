@@ -39,7 +39,7 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
 
     // ✅ baseURL propre (sans /auth/login)
-    baseURL: process.env.BASE_URL || 'http://localhost/orangehrm-5.7/web/index.php/auth/login',
+    baseURL: process.env.BASE_URL || 'http://localhost:8081/orangehrm-5.7/web/index.php/auth/login',
 
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',

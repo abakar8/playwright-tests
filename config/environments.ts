@@ -5,7 +5,7 @@ export const environments = {
     password: process.env.DEV_PASSWORD
   },
   demo: {
-    baseURL: 'https://localhost/orangehrm-5.7/web/index.php/auth/login',
+    baseURL: 'http://localhost:8081/orangehrm-5.7/web/index.php/auth/login',
     username: 'Admin',
     password: 'Abandass-2024'
   }

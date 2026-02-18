@@ -85,7 +85,7 @@ jobs:
         run: npx playwright test
         continue-on-error: true
         env:
-          BASE_URL: http://localhost/orangehrm-5.7/web/index.php/auth/login
+          BASE_URL: http://localhost:8081/orangehrm-5.7/web/index.php/auth/login
           ENV: local
           LOCAL_USERNAME: ${{ secrets.LOCAL_USERNAME }}
           LOCAL_PASSWORD: ${{ secrets.LOCAL_PASSWORD }}

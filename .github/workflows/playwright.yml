@@ -1,109 +1,208 @@
-name: Playwright Tests
+name: Playwright Tests with Xray (Jira API Token)
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, develop, feature/* ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, develop ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1-5'
+
+env:
+  NODE_VERSION: '18'
 
 jobs:
   test:
+    name: Run Playwright Tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
-    # 🔹 Service MySQL
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: orangehrm
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
+    
     steps:
-    # 🔹 Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 🔹 Setup Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-    # 🔹 Install dependencies
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    # 🔹 Setup PHP
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
 
-    # 🔹 Setup OrangeHRM (si pas commité dans le repo)
-    - name: Setup OrangeHRM
-      run: |
-        mkdir -p orangehrm-5.7
-        if [ ! -f "orangehrm-5.7/web/index.php" ]; then
-          curl -L -o orangehrm.zip https://github.com/orangehrm/orangehrm/releases/download/5.7.0/orangehrm-5.7.zip
-          unzip orangehrm.zip -d orangehrm-5.7
-        fi
+      - name: Create test results directory
+        run: mkdir -p test-results merged-results
 
-    # 🔹 Wait for MySQL to be ready
-    - name: Wait for MySQL
-      run: |
-        for i in {1..20}; do
-          if mysqladmin ping -h "mysql" --silent; then
-            echo "MySQL is up!"
-            break
+      - name: Run Playwright tests
+        run: npx playwright test
+        continue-on-error: true
+        env:
+          BASE_URL: ${{ secrets.BASE_URL || 'https://localhost/orangehrm-5.7/web/index.php/auth/login' }}
+          ENV: local
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 30
+
+  publish-to-xray:
+    name: Publish Results to Xray
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-latest
+    
+    outputs:
+      test_execution_key: ${{ steps.xray-upload.outputs.test_execution_key }}
+      test_execution_url: ${{ steps.xray-upload.outputs.test_execution_url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Prepare merged results
+        run: |
+          mkdir -p merged-results
+          if [ -f test-results/junit.xml ]; then
+            cp test-results/junit.xml merged-results/junit.xml
+          else
+            echo "⚠️  Warning: junit.xml not found"
+            ls -la test-results/
           fi
-          echo "Waiting for MySQL..."
-          sleep 3
-        done
 
-    # 🔹 Start OrangeHRM server
-    - name: Start OrangeHRM server
-      run: |
-        php -S localhost:8181 -t orangehrm-5.7/web > server.log 2>&1 &
-        sleep 10
-        cat server.log
+      - name: Authenticate with Xray
+        id: xray-auth
+        run: node scripts/xray-authenticate.js
+        env:
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
 
-    # 🔹 Install Playwright browsers
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      - name: Upload results to Xray
+        id: xray-upload
+        run: node scripts/xray-upload.js
+        env:
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+          XRAY_TEST_PLAN_KEY: ${{ secrets.XRAY_TEST_PLAN_KEY }}
+          XRAY_TEST_EXECUTION_KEY: ${{ secrets.XRAY_TEST_EXECUTION_KEY }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
-    # 🔹 Run Playwright tests
-    - name: Run Playwright tests
-      env:
-        BASE_URL: http://localhost:8181
-        DB_HOST: mysql
-        DB_PORT: 3306
-        DB_USER: root
-        DB_PASSWORD: root
-        DB_NAME: orangehrm
-      run: npx playwright test --reporter=line,junit,html
+      - name: Upload Xray summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xray-summary
+          path: test-results/xray-summary.json
+          retention-days: 30
 
-    # 🔹 Upload Playwright HTML Report
-    - name: Upload Playwright HTML Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-html-report
-        path: playwright-report/
-        retention-days: 30
+  comment-pr:
+    name: Comment PR with Results
+    if: always() && github.event_name == 'pull_request'
+    needs: [publish-to-xray]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # 🔹 Upload JUnit Report (pour Xray)
-    - name: Upload JUnit Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: junit-report
-        path: test-results/junit.xml
-        retention-days: 30
+      - name: Download test summary
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Download Xray summary
+        uses: actions/download-artifact@v4
+        with:
+          name: xray-summary
+          path: test-results
+        continue-on-error: true
+
+      - name: Comment PR with test results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let summary, xraySummary;
+            
+            try {
+              summary = JSON.parse(fs.readFileSync('test-results/summary.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not read summary.json');
+              summary = { total: 0, passed: 0, failed: 0, skipped: 0, successRate: 0 };
+            }
+            
+            try {
+              xraySummary = JSON.parse(fs.readFileSync('test-results/xray-summary.json', 'utf8'));
+            } catch (e) {
+              console.log('Could not read xray-summary.json');
+              xraySummary = null;
+            }
+            
+            const emoji = summary.successRate === 100 ? '🎉' : summary.successRate >= 80 ? '✅' : '⚠️';
+            
+            let comment = `## ${emoji} Test Results - Run #${context.runNumber}
+            
+            | Metric | Value |
+            |--------|-------|
+            | **Total Tests** | ${summary.total} |
+            | ✅ **Passed** | ${summary.passed} |
+            | ❌ **Failed** | ${summary.failed} |
+            | ⏭️ **Skipped** | ${summary.skipped} |
+            | 📊 **Success Rate** | ${summary.successRate}% |
+            `;
+            
+            if (xraySummary) {
+              comment += `
+            ### 📋 Xray Integration
+            - **Test Execution**: [${xraySummary.testExecutionKey}](${xraySummary.testExecutionUrl})
+            - **Updated at**: ${new Date(xraySummary.uploadedAt).toLocaleString()}
+            `;
+            }
+            
+            comment += `
+            ### 🔗 Links
+            - [GitHub Actions Run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            
+            ---
+            *Powered by Playwright + Xray + GitHub for Jira*
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

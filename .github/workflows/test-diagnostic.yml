@@ -178,6 +178,8 @@ jobs:
             "http://localhost/orangehrm-5.7/web/index.php/auth/login",
             "http://127.0.0.1/orangehrm-5.7",
             "http://127.0.0.1/orangehrm-5.7/web/index.php/auth/login"
+            "http://localhost:8081/orangehrm-5.7/web/index.php/auth/login
+
           )
           
           $workingUrls = @()

@@ -9,7 +9,6 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   reporter: [
-    
     ['html', { 
       open: 'never',
       outputFolder: 'playwright-report' 
@@ -18,11 +17,10 @@ export default defineConfig({
     ['json', { 
       outputFile: 'test-results/results.json' 
     }],
+    // ← IMPORTANT pour Xray
     ['junit', { 
       outputFile: 'test-results/junit.xml',
       embedAnnotationsAsProperties: true,
-      embedAttachmentsAsProperty: 'testrun_evidence',
-      includeProjectInTestCaseName: true,
       textContentAnnotations: ['xray']
     }]
   ],

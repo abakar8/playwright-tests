@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/test-fixtures';
 import { getEnvironment } from '../../config/environments';
 
 test.describe('Authentification OrangeHRM', () => {
-  test('CT-OR-8_US-OR-1: Connexion réussie avec des identifiants valides', async ({ loginPage, dashboardPage }) => {
+  test('Connexion réussie avec des identifiants valides', async ({ loginPage, dashboardPage }) => {
     test.info().annotations.push({ type: 'xray', description: 'OR-8' });
     await loginPage.navigate();
     const env = getEnvironment();
@@ -10,8 +10,8 @@ test.describe('Authentification OrangeHRM', () => {
     await expect(dashboardPage.pimMenu).toBeVisible();
   });
 
-  test('CT-OR-9_US-OR-1: Échec de connexion avec des identifiants invalides', async ({ loginPage }) => {
-    test.info().annotations.push({ type: 'xray', description: 'OR-9' });
+  test('Échec de connexion avec des identifiants invalides', async ({ loginPage }) => {
+    test.info().annotations.push({ type: 'xray', description: 'OR-11' });
     await loginPage.navigate();
     await loginPage.login('InvalidUser', 'wrongpass');
     
